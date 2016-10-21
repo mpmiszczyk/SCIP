@@ -1,0 +1,10 @@
+*.ss~
+*.ss#*
+.#*.ss
+
+*.scm~
+*.scm#*
+.#*.scm
+*.bci
+*.bin
+*.com
