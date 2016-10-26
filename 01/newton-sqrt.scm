@@ -27,12 +27,12 @@
 (define (fixed-point fun initial-guess)
   "finds x such (fun x) equals x"
   (define (iterate guess)
-    (if (good-enough? guess)
-        guess
-        (iterate (fun guess))))
-  (define (good-enough? guess)
-    (< (abs (- guess
-               (fun guess))) ; (fun guess) called twice in each iteration
+    (let ((next (fun guess)))
+      (if (close-enough? guess next)
+          guess
+          (iterate next))))
+  (define (close-enough? a b)
+    (< (abs (- a b)) ; (fun guess) called twice in each iteration
        0.0000001))
   (iterate initial-guess))
 ;; in HP videos the use two-parameter iterate funcion, which allows to
