@@ -22,6 +22,22 @@
                     (/ (fun y)
                        (dfun y))))
                guess))
+;; in book they use little bit different divisoins
+(define (newton fun initial-guess)
+  (fixed-point (newton-transform fun) initial-guess))
+
+(define (newton-transform fun)
+  (lambda (x)
+    (- x (/ (fun x)
+            ((deriv fun) x)))))
+
+(define (deriv fun)
+  (lambda (x)
+    (/ (- (fun (+ x dx))
+          (fun (x)))
+       dx)))
+
+(define dx 0.000001) ;; but `dx` could be defined in `let`
 
 
 (define (fixed-point fun initial-guess)
@@ -105,3 +121,5 @@
 ;; and now when I compare those to, while I still think that
 ;; `different-df` might have been easier to come up with (for me, for
 ;; now), the initial `df` is much cleaner to use
+
+
