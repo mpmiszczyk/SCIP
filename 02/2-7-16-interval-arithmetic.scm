@@ -7,6 +7,26 @@
 ;;;; range of the result.
 
 
+(define (make-center-width center width)
+  (make-interval (- center width) (+ center width)))
+
+(define (center-interval i)
+  (/ (+ (lower-bound i)
+        (upper-bound i))
+     2))
+
+(define (width-interval x)
+  (/ (- (upper-bound x)
+        (lower-bound x))
+     2))
+
+(define (make-center-percent center percent)
+  (make-center-width center (* center percent)))
+
+(define (percent-interval i)
+  (/ (center-interval i)
+     (width-interval i)))
+
 (define (make-interval lower upper)
   (cons lower upper))
 
@@ -19,21 +39,18 @@
                  (+ (upper-bound x) (upper-bound y))))
 
 (define (sub-interval x y)
-  (make-inteval (- (lower-bound x) (upper-bound y))
-                (- (upper-bound x) (lower-bound y))))
+  (make-interval (- (lower-bound x) (upper-bound y))
+                 (- (upper-bound x) (lower-bound y))))
 
 ;; (= ((- 2 2) . (- 3 1))
 ;;    (sub-interval (2 . 3)
 ;;                  (1 . 2)))
 
-(define (width-interval x)
-  (- (upper-bound x) (lower-bound x)))
-
 (define (mul-interval x y)
   (let ((p1 (* (lower-bound x) (lower-bound y)))
         (p2 (* (upper-bound x) (upper-bound y)))
         (p3 (* (upper-bound x) (lower-bound y)))
-        (p4 (* (lower-bound x) (upper-bound y)0)))
+        (p4 (* (lower-bound x) (upper-bound y))))
     (make-interval (min p1 p2 p3 p4)
                    (max p1 p2 p3 p4))))
 
@@ -49,6 +66,33 @@
                     (make-interval (/ 1 (upper-bound y))
                                    (/ 1 (lower-bound y))))
       (error "division over zero not allowed" y)))
+
+(define (spans-over-zero? i)
+  (not (eq? (positive? (lower-bound i))
+            (positive? (upper-bound i)))))
+
+;; 2.14
+(define (par1 a b)
+  (div-interval (mul-interval a b)
+                (add-interval a b)))
+
+(define (par2 a b)
+  (let ((one (make-interval 1 1)))
+    (div-interval one
+                  (add-interval (div-interval one a)
+                                (div-interval one b)))))
+
+(define (compare-two-a)
+  (compare-two 100 0.01))
+
+(define (compare-two center-range percente-range)
+  (let ((a (make-center-percent (random center-range)
+                                (random percente-range)))
+        (b (make-center-percent (random center-range)
+                                (random percente-range))))
+    (sub-interval (par1 a b)
+                  (par2 a b))))
+
 
 
 ;; 2.9 in some way it is a funciton, but not a monotonic one
