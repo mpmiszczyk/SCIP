@@ -1,0 +1,21 @@
+(load "../test-manager/load.scm")
+
+(define (fringe tree)
+  (define (node? t) (not (pair? t)))
+  (define (nodes t)
+    (cond ((null? t) ())
+          ((node? t) (list t))
+          (else (append (nodes (car t))
+                        (nodes (cdr t))))))
+  (nodes tree))
+
+(define-test (book-examples)
+  (let ((x '((1 2) (3 4))))
+    (check (equal? (fringe x)
+                   '(1 2 3 4)))
+    (check (equal? (fringe (list x x))
+                   '(1 2 3 4 1 2 3 4)))
+    (check (equal? (fringe (cons x (cons x x)))
+                   '(1 2 3 4 1 2 3 4 1 2 3 4)))))
+
+(run-registered-tests)
