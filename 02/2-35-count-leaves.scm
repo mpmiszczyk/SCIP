@@ -1,5 +1,6 @@
 (load "../test-manager/load.scm")
 
+;; `accumulate` is compund procedure
 (define (accumulate fun initial-value sequence)
   (if (null? sequence)
       initial-value
